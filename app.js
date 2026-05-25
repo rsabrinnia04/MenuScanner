@@ -24,6 +24,7 @@ const UI_TRANSLATIONS = {
     viewMenuBtn: "Reconstructed Menu",
     menuBookTitle: "Moon Pavilion Menu (Repaired)",
     backBtnText: "Back",
+    scanSuccess: "Scan Successful!",
     
     // Category Names (Emojis completely stripped!)
     catMain: "Main Course",
@@ -60,6 +61,7 @@ const UI_TRANSLATIONS = {
     viewMenuBtn: "Buku Menu Digital",
     menuBookTitle: "Buku Menu Moon Pavilion (Diperbaiki)",
     backBtnText: "Kembali",
+    scanSuccess: "Sukses Scan!",
     
     // Kategori
     catMain: "Hidangan Utama",
@@ -96,6 +98,7 @@ const UI_TRANSLATIONS = {
     viewMenuBtn: "Xem Thực Đơn Kỹ Thuật Số",
     menuBookTitle: "Sách Thực Đơn Moon Pavilion (Đã Sửa)",
     backBtnText: "Quay lại",
+    scanSuccess: "Quét thành công!",
     
     // Kategori
     catMain: "Món Chính",
@@ -132,6 +135,7 @@ const UI_TRANSLATIONS = {
     viewMenuBtn: "ดูสมุดเมนูดิจิทัล",
     menuBookTitle: "สมุดเมนู Moon Pavilion (แก้ไขแล้ว)",
     backBtnText: "ย้อนกลับ",
+    scanSuccess: "สแกนสำเร็จ!",
     
     // Kategori
     catMain: "อาหารจานหลัก",
@@ -168,6 +172,7 @@ const UI_TRANSLATIONS = {
     viewMenuBtn: "디지털 메뉴판 보기",
     menuBookTitle: "Moon Pavilion 메뉴판 (텍스트 복원)",
     backBtnText: "이전으로",
+    scanSuccess: "스캔 성공!",
     
     // Kategori
     catMain: "메인 요리",
@@ -1332,7 +1337,7 @@ function evaluateBranchPronunciation(spokenText, confidence) {
   }
 }
 
-// 13. Menu Books Lightbox Actions (Reconstructed and CN Menu)
+// 13. Menu Books Lightbox Actions (Reconstructed and CN Menu + DOWNLOADS)
 function setupMenuModal() {
   // Modal 1: Reconstructed readable Menu Book
   if (DOM.btnViewMenu && DOM.menuModal && DOM.closeModalBtn) {
@@ -1353,16 +1358,49 @@ function setupMenuModal() {
       DOM.cnImageModal.classList.remove('active');
     });
   }
+
+  // Download Trigger for Translated Menu (Digital or high contrast PNG match)
+  const btnDownloadMenu = document.getElementById('btn-download-menu');
+  if (btnDownloadMenu) {
+    btnDownloadMenu.addEventListener('click', () => {
+      let imgPath = 'MOON PAV MENU/CN.png';
+      switch (currentLanguage) {
+        case 'en': imgPath = 'MOON PAV MENU/EN.png'; break;
+        case 'id': imgPath = 'MOON PAV MENU/ID.png'; break;
+        case 'kr': imgPath = 'MOON PAV MENU/KR.png'; break;
+        case 'thai': imgPath = 'MOON PAV MENU/THAI.png'; break;
+        case 'viet': imgPath = 'MOON PAV MENU/VIET.png'; break;
+      }
+      triggerFileDownload(imgPath, `Moon_Pavilion_Menu_${currentLanguage.toUpperCase()}.png`);
+    });
+  }
+
+  // Download Trigger for Original Chinese Menu
+  const btnDownloadCnMenu = document.getElementById('btn-download-cn-menu');
+  if (btnDownloadCnMenu) {
+    btnDownloadCnMenu.addEventListener('click', () => {
+      triggerFileDownload('MOON PAV MENU/CN.png', 'Moon_Pavilion_Menu_CN.png');
+    });
+  }
 }
 
+// Utility function to trigger file download on any device
+function triggerFileDownload(url, filename) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 // 14. Floating Scan feedback overlay
-function showScanningToast(dishName) {
+function showScanningToast(text) {
   const existing = document.querySelector('.toast-notice');
   if (existing) existing.remove();
   
   const toast = document.createElement('div');
   toast.className = 'toast-notice';
-  toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> Scanned: ${dishName}`;
+  toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${text}`;
   document.querySelector('.phone-wrapper').appendChild(toast);
   
   setTimeout(() => {
@@ -1380,13 +1418,12 @@ function setupMindARListeners() {
   marker.addEventListener('targetFound', () => {
     console.log("Mind-AR Target Detected!");
     
-    // Automatically select Gua Bao when marker target is scanned
-    const targetDish = DISHES_DATA[0];
-    showScanningToast(targetDish.translations[currentLanguage]);
+    // Show localized Success Scan toast
+    const t = UI_TRANSLATIONS[currentLanguage];
+    showScanningToast(t.scanSuccess || "Scan Successful!");
     
-    // Auto navigate to category and then the dish leaf practicing console!
-    selectCategoryBranch('main_course');
-    selectDishLeaf(targetDish);
+    // Show translated overlay on scanning, but STAY STILL on homepage (do NOT navigate bottom console)!
+    const targetDish = DISHES_DATA[0];
     triggerAROverlayForDish(targetDish.id);
   });
 }
@@ -1421,14 +1458,20 @@ function triggerAROverlayForDish(dishId) {
   // Update the 3D plane's texture image dynamically!
   arMenuImage.setAttribute('src', imgPath);
   
+  // Show and animate scale using high-performance, bulletproof anime.js to prevent A-Frame dynamic attribute glitches!
   arOverlay.setAttribute('visible', 'true');
-  arOverlay.setAttribute('scale', '0.1 0.1 0.1');
-  setTimeout(() => {
-    arOverlay.setAttribute('animation', {
-      property: 'scale',
-      to: '1.0 1.0 1.0',
-      dur: 500,
+  arOverlay.object3D.scale.set(0.1, 0.1, 0.1);
+  
+  if (typeof AFRAME !== 'undefined' && AFRAME.ANIME) {
+    AFRAME.ANIME({
+      targets: arOverlay.object3D.scale,
+      x: 1.0,
+      y: 1.0,
+      z: 1.0,
+      duration: 500,
       easing: 'easeOutElastic'
     });
-  }, 50);
+  } else {
+    arOverlay.object3D.scale.set(1.0, 1.0, 1.0);
+  }
 }
