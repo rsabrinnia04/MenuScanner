@@ -41,9 +41,10 @@ body {
   font-family: 'Outfit', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-desktop);
   color: var(--text-dark);
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,12 +54,13 @@ body {
 .phone-wrapper {
   background-color: var(--bg-app);
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  height: auto;
   position: relative;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-lg);
-  overflow: hidden;
+  overflow: visible;
   transition: all 0.3s ease;
 }
 
@@ -70,6 +72,8 @@ body {
     border-radius: var(--radius-xl);
     border: 12px solid #1a1a1a; /* Clean smartphone bezel */
     position: relative;
+    overflow-y: auto; /* Desktop scrollbar inside mockup bezel! */
+    overflow-x: hidden;
   }
   
   /* Mock Smartphone status indicator */
@@ -179,9 +183,10 @@ body {
   box-shadow: 0 2px 6px var(--primary-glow);
 }
 
-/* 3. Dynamic Camera Scanner Viewport (Top 70% Height) */
+/* 3. Dynamic Camera Scanner Viewport (Responsive Height) */
 .ar-view-panel {
-  height: 70%;
+  height: 65vh;
+  min-height: 480px;
   background-color: #f0ede6;
   position: relative;
   overflow: hidden;
@@ -299,14 +304,14 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-/* 4. Interactive Learning Tree Console (Bottom 30% Height) */
+/* 4. Interactive Learning Tree Console (Natural Flow Height) */
 .console-panel {
-  height: 30%;
-  overflow-y: auto;
-  padding: 16px;
+  height: auto;
+  overflow: visible;
+  padding: 16px 16px 80px 16px; /* Padding bottom protects scrolling content from overlapping sticky footer */
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex-grow: 1;
 }
 
 /* Navigation Screen card template */
@@ -816,15 +821,20 @@ body {
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* Compact Bottom Utility Toolbar */
+/* Compact Bottom Utility Toolbar - Sticky to Bottom of Bezel Viewport */
 .console-footer-bar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: var(--card-bg);
   border-top: 1px solid var(--border-color);
   padding: 10px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 50;
+  z-index: 150; /* Above all overlapping layers */
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
   flex-shrink: 0;
 }
 
