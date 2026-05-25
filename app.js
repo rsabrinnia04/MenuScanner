@@ -1391,53 +1391,35 @@ function setupMindARListeners() {
   });
 }
 
-// Projection in spatial camera view (Replaced emojis with clear bronze badge)
+// Projection in spatial camera view (Pre-translated PNG file dynamic mapping!)
 function triggerAROverlayForDish(dishId) {
   const arOverlay = document.getElementById('ar-entity-overlay');
-  const arMenuTitle = document.getElementById('ar-menu-title');
-  const arDish1 = document.getElementById('ar-dish-1');
-  const arDish2 = document.getElementById('ar-dish-2');
-  const arDish3 = document.getElementById('ar-dish-3');
-  const arDish4 = document.getElementById('ar-dish-4');
-  const arDish5 = document.getElementById('ar-dish-5');
-  const arDish6 = document.getElementById('ar-dish-6');
-  const arMenuTapHint = document.getElementById('ar-menu-tap-hint');
+  const arMenuImage = document.getElementById('ar-menu-image');
   
-  if (!arOverlay) return;
+  if (!arOverlay || !arMenuImage) return;
   
-  const t = UI_TRANSLATIONS[currentLanguage];
-  
-  // Set translated title
-  if (arMenuTitle) {
-    const titleText = currentLanguage === 'zh' ? '月閣餐廳 | 實體菜單翻譯' : `Moon Pavilion | ${t.viewMenuBtn.toUpperCase()}`;
-    arMenuTitle.setAttribute('value', titleText);
+  // Determine correct pre-translated menu PNG path based on active language tab
+  let imgPath = 'MOON PAV MENU/CN.png';
+  switch (currentLanguage) {
+    case 'en':
+      imgPath = 'MOON PAV MENU/EN.png';
+      break;
+    case 'id':
+      imgPath = 'MOON PAV MENU/ID.png';
+      break;
+    case 'kr':
+      imgPath = 'MOON PAV MENU/KR.png';
+      break;
+    case 'thai':
+      imgPath = 'MOON PAV MENU/THAI.png';
+      break;
+    case 'viet':
+      imgPath = 'MOON PAV MENU/VIET.png';
+      break;
   }
   
-  // List of 6 signature dishes to display on AR menu card
-  const arDishes = [
-    DISHES_DATA.find(d => d.id === "gua_bao"),
-    DISHES_DATA.find(d => d.id === "shrimp_fried_rice"),
-    DISHES_DATA.find(d => d.id === "fried_chicken"),
-    DISHES_DATA.find(d => d.id === "pork_belly"),
-    DISHES_DATA.find(d => d.id === "aiyu_jelly"),
-    DISHES_DATA.find(d => d.id === "suncake")
-  ];
-  
-  const arElements = [arDish1, arDish2, arDish3, arDish4, arDish5, arDish6];
-  
-  arDishes.forEach((dish, idx) => {
-    const el = arElements[idx];
-    if (el && dish) {
-      const translatedName = dish.translations[currentLanguage];
-      el.setAttribute('value', `${idx + 1}. ${dish.nameZh} (${translatedName}) ... ${dish.price}`);
-    }
-  });
-  
-  // Localized tap hint
-  if (arMenuTapHint) {
-    const tapHintText = currentLanguage === 'zh' ? '點選進行對話練習 / Tap to Speak & Listen' : `Tap Card to Listen (${t.listenBtn})`;
-    arMenuTapHint.setAttribute('value', tapHintText);
-  }
+  // Update the 3D plane's texture image dynamically!
+  arMenuImage.setAttribute('src', imgPath);
   
   arOverlay.setAttribute('visible', 'true');
   arOverlay.setAttribute('scale', '0.1 0.1 0.1');
