@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Mandarin Menu AR | Moon Pavilion 月閣餐廳</title>
+  
+  <!-- FontAwesome Icons for UI graphics -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  
+  <!-- Soft Light Theme Style sheet -->
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Load A-Frame and Mind-AR library for Image tracking -->
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  
+  <!-- Custom A-Frame Component to bridge 3D spatial click events with voice playback -->
+  <script>
+    AFRAME.registerComponent('ar-click-listener', {
+      init: function () {
+        this.el.addEventListener('click', () => {
+          if (typeof activeDish !== 'undefined' && activeDish) {
+            playMandarinTTS(activeDish.nameZh);
+          }
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- 1. Portrait Phone Simulator Viewport Wrapper (Smartphone Friendly) -->
+  <div class="phone-wrapper">
+    
+    <!-- HEADER BAR: Brand Logo and horizontal flag selector tabs -->
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-logo-section">
+          <div class="logo-badge">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <div class="brand-text">
+            <h1>月閣餐廳 AR</h1>
+            <p>Moon Pavilion Companion</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Flag buttons scroller (Touch accessible and wrap friendly for all devices) -->
+      <div class="language-scroller" style="flex-wrap: wrap; justify-content: flex-start; padding-bottom: 2px;">
+        <button class="lang-tab active" data-lang="en">
+          <span>🇬🇧</span> English
+        </button>
+        <button class="lang-tab" data-lang="id">
+          <span>🇮🇩</span> Indonesia
+        </button>
+        <button class="lang-tab" data-lang="viet">
+          <span>🇻🇳</span> Tiếng Việt
+        </button>
+        <button class="lang-tab" data-lang="thai">
+          <span>🇹🇭</span> ไทย
+        </button>
+        <button class="lang-tab" data-lang="kr">
+          <span>🇰🇷</span> 한국어
+        </button>
+      </div>
+    </header>
+
+    <!-- AR VIEW PANEL: Confinable Camera scanner screen (Top 38% Height) -->
+    <section class="ar-view-panel">
+      
+      <!-- Classic Bronze viewfinder graphic overlay HUD -->
+      <div class="ar-scanner-overlay">
+        <div class="overlay-status">
+          <span class="live-dot"></span>
+          <span id="hud-badge-text">Scanner Active</span>
+        </div>
+        
+        <!-- Standard gold camera bracket targets -->
+        <div class="scanner-focus-frame">
+          <div class="focus-corner t-l"></div>
+          <div class="focus-corner t-r"></div>
+          <div class="focus-corner b-l"></div>
+          <div class="focus-corner b-r"></div>
+          <div class="focus-laser"></div>
+        </div>
+        
+        <!-- Align card text indicator -->
+        <div class="ar-helper-msg">
+          <i class="fa-solid fa-expand"></i> <span id="ar-hint-text">Align menu card inside the frame</span>
+        </div>
+      </div>
+
+      <!-- Embedded Mind-AR scene -->
+      <div id="ar-scene-container">
+        <a-scene
+          mindar-image="
+            imageTargetSrc: CN BOOK.mind;
+            autoStart: true;
+            uiLoading: no;
+            uiError: no;
+            uiScanning: no;
+            filterMinCF: 0.0001;
+            filterBeta: 0.001;
+          "
+          color-space="sRGB"
+          renderer="colorManagement: true; physicallyCorrectLights: true"
+          vr-mode-ui="enabled: false"
+          device-orientation-permission-ui="enabled: false"
+          embedded
+          style="width: 100%; height: 100%;"
+        >
+          <!-- Standard ambient light -->
+          <a-light type="ambient" intensity="1.8"></a-light>
+          <a-light type="directional" intensity="1.5" position="0 2 2"></a-light>
+
+          <!-- Camera configured with clickable virtual raycaster cursor -->
+          <a-camera look-controls="enabled: false" wasd-controls="enabled: false">
+            <a-cursor 
+              raycaster="objects: .clickable" 
+              fuse="false"
+              material="color: #c5a059; shader: flat"
+              scale="1.2 1.2 1.2"
+            ></a-cursor>
+          </a-camera>
+
+          <!-- AR Target link linking to index 0 -->
+          <a-entity id="marker" mindar-image-target="targetIndex: 0">
+            <!-- Orbiting 3D Billboard hovering on top of scanned card -->
+            <a-entity id="ar-entity-overlay" visible="false" position="0 0 0.03" scale="1 1 1">
+              
+              <!-- 3D Holographic gold card (Large menu card, width=1.4, height=0.9) -->
+              <a-plane 
+                width="1.4" 
+                height="0.9" 
+                material="color: #ffffff; opacity: 0.96; shader: flat; transparent: true; side: double"
+                class="clickable"
+                ar-click-listener
+                geometry="primitive: plane; buffer: false"
+              >
+                <!-- Outer gold border -->
+                <a-plane 
+                  width="1.36" 
+                  height="0.86" 
+                  position="0 0 0.001" 
+                  material="color: #fcfbfa; shader: flat; transparent: true"
+                ></a-plane>
+                
+                <!-- Menu Header -->
+                <a-text 
+                  id="ar-menu-title"
+                  value="月閣餐廳 | TRANSLATED MENU" 
+                  font="noto-sans-tc"
+                  align="center" 
+                  position="0 0.38 0.01" 
+                  width="3.8"
+                  color="#c5a059"
+                ></a-text>
+
+                <!-- Divider Line -->
+                <a-plane
+                  width="1.2"
+                  height="0.002"
+                  position="0 0.32 0.01"
+                  material="color: #c5a059; shader: flat"
+                ></a-plane>
+
+                <!-- Dish 1 -->
+                <a-text 
+                  id="ar-dish-1"
+                  value="1. 台灣刈包 (Taiwan Gua Bao) ... $280" 
+                  font="noto-sans-tc"
+                  align="left" 
+                  position="-0.6 0.22 0.01" 
+                  width="3.1" 
+                  color="#2c3e50"
+                ></a-text>
+
+                <!-- Dish 2 -->
+                <a-text 
+                  id="ar-dish-2"
+                  value="2. 蝦仁炒飯 (Shrimp Fried Rice) ... $250" 
+                  font="noto-sans-tc"
+                  align="left" 
+                  position="-0.6 0.12 0.01" 
+                  width="3.1" 
+                  color="#2c3e50"
+                ></a-text>
+
+                <!-- Dish 3 -->
+                <a-text 
+                  id="ar-dish-3"
+                  value="3. 鹹香酥雞 (Fried Chicken) ... $200" 
+                  font="noto-sans-tc"
+                  align="left" 
+                  position="-0.6 0.02 0.01" 
+                  width="3.1" 
+                  color="#2c3e50"
+                ></a-text>
+
+                <!-- Dish 4 -->
+                <a-text 
+                  id="ar-dish-4"
+                  value="4. 烤醃豬肉 (Pork Belly) ... $220" 
+                  font="noto-sans-tc"
+                  align="left" 
+                  position="-0.6 -0.08 0.01" 
+                  width="3.1" 
+                  color="#2c3e50"
+                ></a-text>
+
+                <!-- Dish 5 -->
+                <a-text 
+                  id="ar-dish-5"
+                  value="5. 檸檬愛玉 (Lemon Aiyu Jelly) ... $160" 
+                  font="noto-sans-tc"
+                  align="left" 
+                  position="-0.6 -0.18 0.01" 
+                  width="3.1" 
+                  color="#2c3e50"
+                ></a-text>
+
+                <!-- Dish 6 -->
+                <a-text 
+                  id="ar-dish-6"
+                  value="6. 太陽餅 (Suncake) ... $100" 
+                  font="noto-sans-tc"
+                  align="left" 
+                  position="-0.6 -0.28 0.01" 
+                  width="3.1" 
+                  color="#2c3e50"
+                ></a-text>
+
+                <!-- Action Instruction Overlay in AR -->
+                <a-text 
+                  id="ar-menu-tap-hint"
+                  value="Tap to Speak & Listen / 點選進行對話練習" 
+                  font="noto-sans-tc"
+                  align="center" 
+                  position="0 -0.38 0.01" 
+                  width="2.6" 
+                  color="#00796b"
+                ></a-text>
+              </a-plane>
+              
+            </a-entity>
+          </a-entity>
+
+        </a-scene>
+      </div>
+    </section>
+
+    <!-- CONSOLE PANEL: Touch interactive branching selectors (Bottom 62% Height) -->
+    <section class="console-panel">
+      
+      <!-- SCREEN A: ROOT - Category selectors -->
+      <div id="screen-root" class="console-screen active">
+        <div class="tree-root-card">
+          <h2 id="welcome-title-text">Interactive Chinese Menu Companion</h2>
+          <p id="welcome-desc-text">Learn how to order food in Taiwan! Scan a menu page using your camera, or tap a category below to start browsing the menu.</p>
+        </div>
+        
+        <!-- Category Buttons (Branch Tree entry nodes - Emojis replaced with FontAwesome) -->
+        <button class="category-tree-btn" data-category="main_course">
+          <div class="category-btn-title">
+            <span class="category-icon"><i class="fa-solid fa-bowl-food" style="color: var(--primary);"></i></span>
+            <span id="btn-title-main">Main Course</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--bronze-gold);"></i>
+        </button>
+        
+        <button class="category-tree-btn" data-category="appetizer">
+          <div class="category-btn-title">
+            <span class="category-icon"><i class="fa-solid fa-pepper-hot" style="color: var(--accent);"></i></span>
+            <span id="btn-title-appetizer">Appetizers</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--bronze-gold);"></i>
+        </button>
+        
+        <button class="category-tree-btn" data-category="beverages">
+          <div class="category-btn-title">
+            <span class="category-icon"><i class="fa-solid fa-mug-hot" style="color: var(--success);"></i></span>
+            <span id="btn-title-beverage">Beverages & Pastries</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--bronze-gold);"></i>
+        </button>
+      </div>
+
+      <!-- SCREEN B: BRANCH - Dish list selectors -->
+      <div id="screen-branch" class="console-screen">
+        <div class="screen-header-row">
+          <button id="btn-back-to-root" class="btn-back-tree">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <span id="branch-title-text" class="branch-title">Main Course</span>
+        </div>
+        
+        <!-- Dish list container -->
+        <div id="branch-dishes-list" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Loaded dynamically in app.js -->
+        </div>
+      </div>
+
+      <!-- SCREEN C: LEAF - Practicing Dialogue Console -->
+      <div id="screen-leaf" class="console-screen">
+        <div class="screen-header-row">
+          <button id="btn-back-to-branch" class="btn-back-tree">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <span class="branch-title" id="leaf-header-title">Practice Ordering</span>
+        </div>
+        
+        <!-- Active Dish Card -->
+        <div class="leaf-card">
+          <div class="leaf-dish-meta">
+            <div id="dish-visual" class="dish-emoji-badge">
+              <i class="fa-solid fa-bowl-food"></i>
+            </div>
+            <div class="leaf-dish-info">
+              <h3 id="dish-title">台灣刈包</h3>
+              <div id="dish-pinyin" class="pinyin">Táiwān guàbāo</div>
+              <div id="dish-trans" class="trans">Taiwan Gua Bao</div>
+            </div>
+          </div>
+          
+          <!-- Tree Sentence list container -->
+          <div class="section-label" style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 2px;">
+            <i class="fa-solid fa-comments"></i> TAP SPEAKER TO LISTEN / TAP MIC TO SPEAK
+          </div>
+          
+          <!-- Option containers -->
+          <div id="branch-sentence-container" class="dialog-branch-container">
+            <!-- Loaded dynamically in app.js -->
+          </div>
+        </div>
+      </div>
+      
+    </section>
+
+    <!-- FOOTER PANEL: Dual menu book togglers side-by-side (Smartphone Optimized) -->
+    <footer class="console-footer-bar" style="gap: 8px;">
+      <!-- Button 1: Original Chinese Menu Book (CN.png) -->
+      <button id="btn-view-cn-menu" class="footer-btn-left" style="background-color: var(--accent-light); color: var(--accent); border: 1px solid rgba(230, 81, 0, 0.15); flex: 1;">
+        <i class="fa-solid fa-file-image"></i>
+        <span>CN Menu</span>
+      </button>
+      
+      <!-- Button 2: Repaired Digital Menu Board -->
+      <button id="btn-view-menu" class="footer-btn-left" style="flex: 1.1;">
+        <i class="fa-solid fa-book-open"></i>
+        <span id="btn-view-menu-text">Reconstructed</span>
+      </button>
+    </footer>
+
+    <!-- LIGHTBOX MODAL 1: Original Chinese Menu Image Lightbox (CN.png) -->
+    <div id="cn-image-modal" class="menu-modal">
+      <div class="modal-header-row">
+        <h3>月閣餐廳 (Original Menu Book)</h3>
+        <button id="close-cn-modal-btn" class="modal-close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 8px; justify-content: center; align-items: center; background-color: rgba(0,0,0,0.05);">
+        <img src="MOON PAV MENU/CN.png" alt="Original Chinese Menu" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: var(--radius-sm); box-shadow: var(--shadow-md);"/>
+      </div>
+    </div>
+
+    <!-- LIGHTBOX MODAL 2: Reconstructed Digital Menu Card (Tofu characters resolved!) -->
+    <div id="menu-modal" class="menu-modal">
+      <div class="modal-header-row">
+        <h3 id="modal-title-text">Moon Pavilion Menu Book</h3>
+        <button id="close-modal-btn" class="modal-close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <!-- High contrast scrollable digital menu groups (Visible System fonts) -->
+      <div id="modal-reconstructed-body" class="modal-reconstructed-body">
+        <!-- Reconstructed in app.js -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Load Logic Engine -->
+  <script src="app.js"></script>
+</body>
+</html>

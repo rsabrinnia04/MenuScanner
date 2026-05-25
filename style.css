@@ -1,0 +1,854 @@
+/* Import Classic Warm Typography */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+/* Style Tokens - Warm Hospitality & School Classroom Elegant Soft Light Theme */
+:root {
+  --primary: #3f51b5;         /* Deep Warm Indigo */
+  --primary-light: #f5f6fc;   /* Soft Indigo Hint */
+  --primary-glow: rgba(63, 81, 181, 0.12);
+  --accent: #e65100;          /* Classic Coral Orange */
+  --accent-light: #fff3e0;    /* Warm Cream Highlight */
+  --success: #00796b;         /* Rich Emerald Green */
+  --success-glow: rgba(0, 121, 107, 0.12);
+  --warning: #f57c00;         /* Soft Tangerine */
+  
+  --bg-desktop: #f6f3eb;      /* Soft warm sandstone cream for PC background */
+  --bg-app: #faf8f5;          /* Lighter cream background for the mobile screen */
+  --card-bg: #ffffff;         /* Pure white cards */
+  --border-color: rgba(0, 0, 0, 0.06);
+  --bronze-gold: #c5a059;     /* Elegant Bronze Gold for AR scanner frame */
+  
+  --text-dark: #2c3e50;       /* High-contrast slate */
+  --text-muted: #5e6e7d;      /* Softer grey for captions */
+  
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 36px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 8px 24px rgba(31, 38, 135, 0.05);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Base resets */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-desktop);
+  color: var(--text-dark);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 1. Phone Viewport Container / Desktop Bezel Mockup (Smartphone Friendly) */
+.phone-wrapper {
+  background-color: var(--bg-app);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* PC Mockup screen constraints */
+@media (min-width: 500px) {
+  .phone-wrapper {
+    width: 420px;
+    height: 860px;
+    border-radius: var(--radius-xl);
+    border: 12px solid #1a1a1a; /* Clean smartphone bezel */
+    position: relative;
+  }
+  
+  /* Mock Smartphone status indicator */
+  .phone-wrapper::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 18px;
+    background-color: #1a1a1a;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    z-index: 200;
+  }
+}
+
+/* 2. Compact Phone Header & Logo Section */
+.app-header {
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-badge {
+  background-color: var(--primary-glow);
+  color: var(--primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border: 1px solid rgba(63, 81, 181, 0.1);
+}
+
+.brand-text h1 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.2px;
+}
+
+.brand-text p {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: -2px;
+}
+
+/* Flag Selection Scrolling Bar */
+.language-scroller {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 0 6px 0;
+  scrollbar-width: none; /* Hide scrollbar for clean UI */
+}
+.language-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.lang-tab {
+  background: var(--primary-light);
+  border: 1px solid rgba(63, 81, 181, 0.08);
+  color: var(--primary);
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.lang-tab:hover {
+  background-color: rgba(63, 81, 181, 0.08);
+}
+
+.lang-tab.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 2px 6px var(--primary-glow);
+}
+
+/* 3. Dynamic Camera Scanner Viewport (Top 38% Height) */
+.ar-view-panel {
+  height: 38%;
+  background-color: #f0ede6;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+#ar-scene-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+/* Clean Classic Bronze Camera Bracket Overlay */
+.ar-scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.overlay-status {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--text-dark);
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-color);
+  align-self: flex-start;
+  box-shadow: var(--shadow-sm);
+}
+
+.overlay-status .live-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--bronze-gold);
+  border-radius: 50%;
+  animation: live-pulse 1.5s infinite;
+}
+
+@keyframes live-pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.scanner-focus-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 180px;
+  pointer-events: none;
+}
+
+.focus-corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--bronze-gold);
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.85;
+}
+
+.focus-corner.t-l { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 6px; }
+.focus-corner.t-r { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 6px; }
+.focus-corner.b-l { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 6px; }
+.focus-corner.b-r { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 6px; }
+
+/* Subtle scanning line */
+.focus-laser {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: var(--bronze-gold);
+  opacity: 0.4;
+  top: 0;
+  left: 0;
+  animation: scan-vertical 4s infinite linear;
+}
+
+@keyframes scan-vertical {
+  0% { top: 0; }
+  50% { top: 100%; }
+  100% { top: 0; }
+}
+
+.ar-helper-msg {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(44, 62, 80, 0.85);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 4. Interactive Learning Tree Console (Bottom 62% Height) */
+.console-panel {
+  height: 62%;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Navigation Screen card template */
+.console-screen {
+  display: none; /* Controlled by active class in JS */
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  animation: screen-slide-in 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.console-screen.active {
+  display: flex;
+}
+
+@keyframes screen-slide-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* SCREEN A: ROOT - Tree Category Selection */
+.tree-root-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.tree-root-card h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.tree-root-card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.category-tree-btn {
+  background-color: var(--card-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  margin-top: 4px;
+}
+
+.category-tree-btn:hover {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.category-btn-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.category-icon {
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background-color: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SCREEN B: BRANCH - Dish List Selector */
+.screen-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.btn-back-tree {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-dark);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-back-tree:hover {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.branch-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.branch-dish-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.branch-dish-card:hover {
+  transform: translateX(4px);
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.dish-thumb-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dish-emoji-badge {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: var(--bg-desktop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dish-name-group h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.dish-name-group p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.dish-price-badge {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+  background-color: var(--accent-light);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* SCREEN C: LEAF - Practicing Console Screen */
+.leaf-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leaf-dish-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1.5px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.leaf-dish-info h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.leaf-dish-info .pinyin {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.leaf-dish-info .trans {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+/* Branching Dialog practicing console options */
+.dialog-branch-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.branch-option-box {
+  background-color: var(--bg-desktop);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-badge-header {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--bronze-gold);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.option-text-group {
+  margin-top: -2px;
+}
+
+.option-cn {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.option-pinyin {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.option-trans {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* Compact controls underneath each branch */
+.option-controls-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.action-btn-sm {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.action-btn-sm.listen {
+  background-color: var(--primary);
+  color: white;
+}
+.action-btn-sm.listen:hover {
+  background-color: #303f9f;
+}
+
+.action-btn-sm.speak {
+  background-color: var(--success);
+  color: white;
+}
+.action-btn-sm.speak:hover {
+  background-color: #004d40;
+}
+
+/* Pulsing Mic */
+.action-btn-sm.speak.listening {
+  background-color: var(--accent);
+  animation: mic-pulse-sm 1.5s infinite;
+}
+@keyframes mic-pulse-sm {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Clean score badge card inside Console */
+.score-badge-card {
+  display: none; /* Managed by JS */
+  background-color: var(--primary-light);
+  border: 1px solid rgba(63, 81, 181, 0.1);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.score-value-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--card-bg);
+  border: 2px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.score-value-box.perfect {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.score-texts h5 {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+.score-texts p {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* 5. Accessible Menu Modal Rebuilder (visible digital card reader) */
+.menu-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-app);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.menu-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+}
+
+.modal-header-row h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.modal-close-btn {
+  background-color: var(--bg-desktop);
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+/* Digital Reconstructed Menu Body */
+.modal-reconstructed-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background-color: var(--bg-app);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.digital-menu-card {
+  background-color: var(--card-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.digital-section-header {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--bronze-gold);
+  border-bottom: 1.5px solid var(--border-color);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.digital-menu-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.04);
+}
+.digital-menu-item-row:last-child {
+  border-bottom: none;
+}
+
+.digital-item-name-group {
+  flex: 1;
+}
+
+.digital-item-names {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.digital-item-zh {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.digital-item-py {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.digital-item-trans {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+  padding-right: 12px;
+}
+
+.digital-item-price {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--bronze-gold);
+}
+
+/* Floating Scanning feedback toast in phone */
+.toast-notice {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--success);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow-md);
+  z-index: 150;
+  animation: toast-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes toast-pop {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Compact Bottom Utility Toolbar */
+.console-footer-bar {
+  background-color: var(--card-bg);
+  border-top: 1px solid var(--border-color);
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.footer-btn-left {
+  background: var(--primary-glow);
+  border: 1px solid rgba(63, 81, 181, 0.1);
+  color: var(--primary);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-btn-left:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+.footer-copyright {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
