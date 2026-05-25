@@ -19,9 +19,9 @@ The UI features a **premium soft-light aesthetic** tailored for all ages, replac
 
 ### 1. Dynamic 3D Spatial AR Translated Menu Board
 *   Points the camera at the Moon Pavilion printed card (`MOON PAV MENU/CN.png` via pre-compiled `CN BOOK.mind` descriptor target).
-*   **Enlarged Viewfinder Frame**: Features an enlarged and widened camera focus frame (`280px` wide) for seamless card alignment.
-*   **Complete Translated Menu Overlay**: Overlays a gorgeous, large, and highly legible 3D holographic menu board directly onto the printed page in real-time, displaying **6 signature Moon Pavilion dishes** (Gua Bao, Shrimp Fried Rice, Fried Chicken, Pork Belly, Aiyu Jelly, Suncake).
-*   **Instant Multi-Language Translation**: Selecting different language flags (English, Indonesian, Vietnamese, Thai, Korean) instantly translates the entire 3D spatial menu board and interactive guides in the camera view!
+*   **Enlarged Viewfinder Frame (70% Screen Height)**: Features a massive, spacious camera panel occupying 70% of the viewport height with a large portrait focus bracket frame (`300px` wide by `420px` high) for effortless menu scanning.
+*   **Direct PNG Texture Mapping Overlay**: Overlays a gorgeous, large, and highly legible 3D holographic menu card directly onto the printed page, dynamically loading high-quality pre-translated menu sheets (`EN.png`, `ID.png`, `VIET.png`, `THAI.png`, `KR.png`) from the assets folder.
+*   **Instant Multi-Language Translation**: Selecting different language flags (English, Indonesian, Vietnamese, Thai, Korean) instantly swaps the 3D plane's image texture in AR, matching the selected language on the spot!
 
 ### 2. Branching Tree Navigation
 Supports a simple, structured learning path suited for all age groups:
